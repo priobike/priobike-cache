@@ -1,0 +1,38 @@
+version: '3.7'
+
+services:
+  cache-service-1:
+    build: .
+    networks:
+      - test_network
+    environment:
+      - HOST_URL=http://content-service
+      - SUCCESS_STORE_TIME=1m
+      - NOT_FOUND_STORE_TIME=1m
+    volumes:
+      - ./templates:/etc/nginx/templates
+    ports:
+      - "80:80"
+
+  cache-service-2:
+    build: .
+    networks:
+      - test_network
+    environment:
+      - HOST_URL=http://content-service
+      - SUCCESS_STORE_TIME=10m
+      - NOT_FOUND_STORE_TIME=10m
+    volumes:
+      - ./templates:/etc/nginx/templates
+    ports:
+      - "81:80"
+    
+  
+  content-service:
+    build: ./content_1/.
+    networks:
+      - test_network
+  
+networks:
+  test_network:
+    name: test_network
