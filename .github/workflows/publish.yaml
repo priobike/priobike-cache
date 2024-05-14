@@ -15,7 +15,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  publish-nginx:
+  publish-priobike-cache:
     runs-on: self-hosted
     container: docker:latest
 
