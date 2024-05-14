@@ -13,4 +13,4 @@ And create a shortlink with: \
 And request the shortlink mutliple times with: \
 `curl --header "X-Api-Key: 8a1e47f1-36ac-44e8-b648-aae112f97208" -H "Content-Type: application/json" http://localhost/rest/v3/short-urls/SHORTLINKCODE`
 
-After the first 3 requests the caching service sends the response directly. After 1 minute the data in the cache resets.
+After the first 3 requests the caching service sends the response. After 1 minute the cache resets.
