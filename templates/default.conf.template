@@ -1,17 +1,20 @@
 # Define caching path and zone
 proxy_cache_path /data/nginx/cache levels=1:2 keys_zone=cache:10m max_size=10g inactive=60m;
 
-# Define proxy settings
-proxy_cache cache;
-proxy_cache_valid 200 302 ${SUCCESS_STORE_TIME}; # Cache successful responses and found content for X minutes
-proxy_cache_valid 404     ${NOT_FOUND_STORE_TIME}; # Cache 404 errors for X minutes
-proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
-
 server {
     listen 80;
 
+    large_client_header_buffers 4 16k;
+
     # Proxy requests to the upstream server
     location / {
+        # Define proxy settings for this location
+        proxy_cache_valid 200 302 ${SUCCESS_STORE_TIME}; # Cache successful responses and found content for X minutes
+        proxy_cache_valid 404     ${NOT_FOUND_STORE_TIME}; # Cache 404 errors for X minutes
+        proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+
+        
+
         proxy_pass       ${HOST_URL};
 
         # Enable caching for this location

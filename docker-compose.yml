@@ -1,31 +1,53 @@
 version: '3.7'
 
 services:
-  cache-service-1:
+  traefik:
+    image: traefik:v2.9
+    hostname: traefik
+    networks:
+      - test_network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "80:80"
+    command:
+      - --providers.docker
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=test_network
+      - --entryPoints.web.address=:80
+
+  cache-service:
     build: .
     networks:
       - test_network
     environment:
-      - HOST_URL=http://content-service
+      - HOST_URL=http://shlink:8080/
       - SUCCESS_STORE_TIME=1m
       - NOT_FOUND_STORE_TIME=1m
     volumes:
       - ./templates:/etc/nginx/templates
-    ports:
-      - "80:80"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.worker.rule=PathPrefix(`/`)
+      - traefik.http.routers.worker.entryPoints=web
+      - traefik.http.services.worker.loadbalancer.server.port=80
+    deploy:
+      mode: replicated
+      endpoint_mode: dnsrr
+      replicas: 3
+    restart: unless-stopped
 
-  cache-service-2:
-    build: .
+  shlink:
+    image: shlinkio/shlink:3
+    volumes:
+      - shlink:/shlink
+    env_file:
+      - shlink/.env
     networks:
       - test_network
-    environment:
-      - HOST_URL=http://content-service
-      - SUCCESS_STORE_TIME=10m
-      - NOT_FOUND_STORE_TIME=10m
-    volumes:
-      - ./templates:/etc/nginx/templates
-    ports:
-      - "81:80"
+    deploy:
+      restart_policy:
+        condition: any
     
   
   content-service:
@@ -36,3 +58,7 @@ services:
 networks:
   test_network:
     name: test_network
+
+volumes:
+  shlink:
+    name: shlink
