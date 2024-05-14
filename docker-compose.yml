@@ -48,12 +48,6 @@ services:
     deploy:
       restart_policy:
         condition: any
-    
-  
-  content-service:
-    build: ./content_1/.
-    networks:
-      - test_network
   
 networks:
   test_network:
