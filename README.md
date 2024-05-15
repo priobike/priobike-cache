@@ -8,9 +8,9 @@ To test the setup run: \
 `docker-compose up`
 
 And create a shortlink with: \
-`curl -X POST --header "X-Api-Key: 8a1e47f1-36ac-44e8-b648-aae112f97208" -H "Content-Type: application/json" -d @example_long_link.json  http://localhost/rest/v3/short-urls`
+`curl -X POST --header "X-Api-Key: 8a1e47f1-36ac-44e8-b648-aae112f97208" -H "Content-Type: application/json" -d @example_long_link.json  http://localhost/link/rest/v3/short-urls`
 
 And request the shortlink mutliple times with: \
-`curl --header "X-Api-Key: 8a1e47f1-36ac-44e8-b648-aae112f97208" -H "Content-Type: application/json" http://localhost/rest/v3/short-urls/SHORTLINKCODE`
+`curl --header "X-Api-Key: 8a1e47f1-36ac-44e8-b648-aae112f97208" -H "Content-Type: application/json" http://localhost/link/rest/v3/short-urls/SHORTLINKCODE`
 
 After the first 3 requests the caching service sends the response. After 1 minute the cache resets.

@@ -21,16 +21,19 @@ services:
     networks:
       - test_network
     environment:
-      - HOST_URL=http://shlink:8080/
+      - HOST_URL=http://shlink:8080
       - SUCCESS_STORE_TIME=1m
       - NOT_FOUND_STORE_TIME=1m
     volumes:
       - ./templates:/etc/nginx/templates
     labels:
       - traefik.enable=true
-      - traefik.http.routers.worker.rule=PathPrefix(`/`)
-      - traefik.http.routers.worker.entryPoints=web
-      - traefik.http.services.worker.loadbalancer.server.port=80
+      - traefik.http.routers.cache-service.rule=PathPrefix(`/link/`)
+      - traefik.http.routers.cache-service.entryPoints=web
+      - traefik.http.routers.cache-service.middlewares=cache-service
+      - traefik.http.middlewares.cache-service.stripprefix.prefixes=/link/
+      - traefik.http.middlewares.cache-service.stripprefix.forceSlash=true
+      - traefik.http.services.cache-service.loadbalancer.server.port=80
     deploy:
       mode: replicated
       endpoint_mode: dnsrr
