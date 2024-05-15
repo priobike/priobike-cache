@@ -4,4 +4,4 @@ RUN mkdir /data
 RUN mkdir /data/nginx
 RUN mkdir /data/nginx/cache
 
-COPY ./templates/default.conf.template /etc/nginx/conf.d/default.conf.template
+COPY ./templates/default.conf.template /etc/nginx/templates/default.conf.template

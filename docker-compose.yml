@@ -24,8 +24,6 @@ services:
       - HOST_URL=http://shlink:8080
       - SUCCESS_STORE_TIME=1m
       - NOT_FOUND_STORE_TIME=1m
-    volumes:
-      - ./templates:/etc/nginx/templates
     labels:
       - traefik.enable=true
       - traefik.http.routers.cache-service.rule=PathPrefix(`/link/`)
