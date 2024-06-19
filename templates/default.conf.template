@@ -11,7 +11,7 @@ server {
         # Define proxy settings for this location
         proxy_cache_valid 200 302 ${SUCCESS_STORE_TIME}; # Cache successful responses and found content for X minutes
         proxy_cache_valid 404     ${NOT_FOUND_STORE_TIME}; # Cache 404 errors for X minutes
-        proxy_cache_valid any 0 # To not cache 50X for example
+        proxy_cache_valid any 0; # To not cache 50X for example
         proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
 
         
