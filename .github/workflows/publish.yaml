@@ -4,9 +4,7 @@ on:
   push:
     branches:
       - main
-      - master
       - stable
-      - release
     tags:
       - v*
 
@@ -16,7 +14,7 @@ env:
 
 jobs:
   publish-priobike-cache:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     container: docker:latest
 
     permissions:
