@@ -12,8 +12,7 @@ server {
         proxy_cache_valid 200 302 ${SUCCESS_STORE_TIME}; # Cache successful responses and found content for X minutes
         proxy_cache_valid 404     ${NOT_FOUND_STORE_TIME}; # Cache 404 errors for X minutes
         proxy_cache_valid any 1m; # To cache everything else for 1 minute
-
-        
+        proxy_cache_use_stale off;
 
         proxy_pass       ${HOST_URL};
 
