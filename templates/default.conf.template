@@ -1,8 +1,8 @@
+# Reresolves the static urls. This is neccessary because the ip addresses of proxy pass can change
+resolver 127.0.0.11 valid=30s; # Use Docker's internal DNS
+
 # Define caching path and zone
 proxy_cache_path /data/nginx/cache levels=1:2 keys_zone=cache:10m max_size=10g inactive=60m;
-
-# Reresolves the static urls. This is neccessary because the ip addresses of proxy pass can change
-resolver 127.0.0.11 valid=1m; 
 
 server {
     listen 80;
@@ -17,7 +17,8 @@ server {
         proxy_cache_valid any 1m; # To cache everything else for 1 minute
         proxy_cache_use_stale off;
 
-        proxy_pass       ${HOST_URL};
+        set $upstream ${HOST_URL};
+        proxy_pass $upstream;
 
         # Enable caching for this location
         proxy_cache cache;
