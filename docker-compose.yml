@@ -21,22 +21,41 @@ services:
     networks:
       - test_network
     environment:
-      - HOST_URL=http://shlink:8080
+      - HOST_URL=http://shlink-guard:8000
       - SUCCESS_STORE_TIME=1m
       - NOT_FOUND_STORE_TIME=1m
     labels:
       - traefik.enable=true
-      - traefik.http.routers.cache-service.rule=PathPrefix(`/link/rest/v3/short-urls/`) || (PathPrefix(`/link/rest/v3/short-urls`) && Method(`POST`))
-      - traefik.http.routers.cache-service.entryPoints=web
-      - traefik.http.routers.cache-service.middlewares=cache-service
-      - traefik.http.middlewares.cache-service.stripprefix.prefixes=/link/
-      - traefik.http.middlewares.cache-service.stripprefix.forceSlash=true
+
+      # Access via Browser (for short link resolving)
+      - traefik.http.routers.cache-service-for-browser.rule=PathPrefix(`/link/`) && Method(`GET`)
+      - traefik.http.routers.cache-service-for-browser.entryPoints=web
+      - traefik.http.routers.cache-service-for-browser.middlewares=cache-service-for-browser
+      - traefik.http.routers.cache-service-for-browser.service=cache-service
+      - traefik.http.middlewares.cache-service-for-browser.stripprefix.prefixes=/link/
+      - traefik.http.middlewares.cache-service-for-browser.stripprefix.forceSlash=true
+      # Access via App (for short link resolving AND short link creation)
+      - traefik.http.routers.cache-service-for-app.rule=PathPrefix(`/link/rest/v3/short-urls/`) || (PathPrefix(`/link/rest/v3/short-urls`) && Method(`POST`))
+      - traefik.http.routers.cache-service-for-app.entryPoints=web
+      - traefik.http.routers.cache-service-for-app.middlewares=cache-service-for-app
+      - traefik.http.routers.cache-service-for-app.service=cache-service
+      - traefik.http.middlewares.cache-service-for-app.stripprefix.prefixes=/link/
+      - traefik.http.middlewares.cache-service-for-app.stripprefix.forceSlash=true
+
       - traefik.http.services.cache-service.loadbalancer.server.port=80
     deploy:
       mode: replicated
       endpoint_mode: dnsrr
-      replicas: 3
+      replicas: 1
     restart: unless-stopped
+    
+  
+  shlink-guard:
+    image: bikenow.vkw.tu-dresden.de/priobike/priobike-shlink-guard:main
+    env_file:
+      - shlink/guard/.env
+    networks:
+      - test_network
 
   shlink:
     image: shlinkio/shlink:3
@@ -47,7 +66,10 @@ services:
     networks:
       - test_network
     deploy:
-      restart_policy:
+      mode: replicated
+      endpoint_mode: dnsrr
+      replicas: 1
+      restart_policy: 
         condition: any
   
 networks:
