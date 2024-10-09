@@ -24,6 +24,7 @@ services:
       - HOST_URL=http://shlink-guard:8000
       - SUCCESS_STORE_TIME=1m
       - NOT_FOUND_STORE_TIME=1m
+      - RESOLVER_IP=127.0.0.11 # Kubernetes 10.96.0.10, Docker 127.0.0.11 for example
     labels:
       - traefik.enable=true
 

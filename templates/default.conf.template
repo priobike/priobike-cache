@@ -1,5 +1,5 @@
 # Reresolves the static urls. This is neccessary because the ip addresses of proxy pass can change
-resolver 127.0.0.11 valid=30s; # Use Docker's internal DNS
+resolver ${RESOLVER_IP} valid=30s; # Use Docker's or Kubernetes internal DNS
 
 # Define caching path and zone
 proxy_cache_path /data/nginx/cache levels=1:2 keys_zone=cache:10m max_size=10g inactive=60m;
